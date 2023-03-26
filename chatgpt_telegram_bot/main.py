@@ -3,7 +3,7 @@ import telegram
 import httpx
 
 # from fastapi import FastAPI
-
+from telegram import Update
 from telegram.error import NetworkError
 from telegram.ext import ApplicationBuilder, MessageHandler, filters
 
@@ -29,15 +29,11 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-bot = telegram.Bot(token=TELEGRAM_TOKEN)
-application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
-
-async def handle_message(update, context):
+async def handle_message(update: Update, context):
     text = update.message.text
     try:
-        messages = context_manager.add_message(text)
-        response = await API_client.send_request(messages)
+        response = await handle_request_to_API(text)
     except httpx.ConnectTimeout as exc:
         print("\033[91m ERROR: connection timed out \033[0m")
         response = f"exception: connection timed out"
@@ -50,16 +46,30 @@ async def handle_message(update, context):
 
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
-handler = MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
+async def handle_request_to_API(text):
+    message = Message(role="user", content=text)
+    messages = context_manager.add_message(message)
+
+    print("\033[91m HERE \033[0m", messages)
+
+    response = await API_client.send_request(messages)
+    response_message = Message(role="assistant", content=response)
+    context_manager.add_message(response_message)
+    return response
+
 
 
 if __name__ == '__main__':
+
+    handler = MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
+    bot = telegram.Bot(token=TELEGRAM_TOKEN)
+    application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     application.add_handler(handler)
     application.run_polling()
 
 
 # TODO:
-# resolve problem on running
+# resolve problem on running: 'api.telegram.org' does not appear to be an IPv4 or IPv6 address (maybe set telegram.error.TimedOut)
 # context
 # commands
 # inline mode
