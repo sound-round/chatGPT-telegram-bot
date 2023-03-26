@@ -6,7 +6,6 @@ import httpx
 
 from telegram.error import NetworkError
 from telegram.ext import ApplicationBuilder, MessageHandler, filters
-from pydantic import BaseModel
 
 from enviroment import TELEGRAM_TOKEN
 from openai_client import OpenAIClient
