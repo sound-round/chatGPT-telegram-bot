@@ -1,5 +1,5 @@
-t:
-	poetry run pytest
+t test:
+	poetry run pytest -vv
 
 make dev:
-	poetry run python src/main.py
+	poetry run python -m chatgpt_telegram_bot.main

@@ -7,11 +7,21 @@ import httpx
 from telegram.error import NetworkError
 from telegram.ext import ApplicationBuilder, MessageHandler, filters
 
-from enviroment import TELEGRAM_TOKEN
-from openai_client import OpenAIClient
+from .enviroment import TELEGRAM_TOKEN
+from .openai_client import OpenAIClient
+from .context.context_manager import ContextManager
+from .models import Message
 
+
+
+
+SYSTEM_PROMPT = "You are a helpful assistant. Your name is Alfred." 
+
+
+start_prompt = Message(role="system", content=SYSTEM_PROMPT)
 
 API_client = OpenAIClient()
+context_manager = ContextManager(start_prompt)
 
 
 logging.basicConfig(
@@ -24,9 +34,10 @@ application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
 
 async def handle_message(update, context):
-    message = update.message.text
+    text = update.message.text
     try:
-        response = await API_client.send_request(message)
+        messages = context_manager.add_message(text)
+        response = await API_client.send_request(messages)
     except httpx.ConnectTimeout as exc:
         print("\033[91m ERROR: connection timed out \033[0m")
         response = f"exception: connection timed out"

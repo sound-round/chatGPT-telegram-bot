@@ -1,6 +1,6 @@
 import httpx
 
-from enviroment import OPENAI_TOKEN
+from .enviroment import OPENAI_TOKEN
 
 
 CONFIG = {
@@ -18,7 +18,6 @@ ROLE = 'user'
 TIMEOUT = 30
 URL = 'https://api.openai.com/v1/chat/completions'
 
-SYSTEM_PROMPT = "You are a helpful assistant. Your name is Alfred"
 
 
 class OpenAIClient:
@@ -35,10 +34,10 @@ class OpenAIClient:
         self.timeout = timeout
         self.config = config
 
-    async def send_request(self, text):
-        system_prompt = {'role': "system", 'content': SYSTEM_PROMPT}
-        user_message = {'role': "user", 'content': text}
-        messages = [system_prompt, user_message]
+    async def send_request(self, messages : dict[str, str]):
+        # system_prompt = {'role': "system", 'content': SYSTEM_PROMPT}
+        # user_message = {'role': "user", 'content': text}
+        # messages = [system_prompt, user_message]
         request_params = dict(messages=messages, **self.config)
 
         async with httpx.AsyncClient() as client:

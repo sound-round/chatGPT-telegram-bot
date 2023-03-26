@@ -1,4 +1,4 @@
-from pydantic import BaseModel, root_validator, ValidationError, validator
+from pydantic import BaseModel, root_validator
 
 from .tokenizer import tokenize
 
