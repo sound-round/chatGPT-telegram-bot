@@ -9,9 +9,10 @@ class ContextManager:
     context: "list[Message]" = []
     tokens: int = 0
 
-    def __init__(self, system_prompt: Message):
-        self.context.append(system_prompt)
-        self.tokens += system_prompt.tokens
+    def __init__(self, system_prompt: str):
+        start_prompt = Message(role="system", content=system_prompt)
+        self.context.append(start_prompt)
+        self.tokens += start_prompt.tokens
 
     def add_message(self, role: str, text: str):
         message = Message(role=role, content=text)
@@ -37,3 +38,12 @@ class ContextManager:
 
     def _proccess_context(self, context: "list[Message]"):
         return list(map(lambda message: {"role": message.role, "content": message.content}, context))
+    
+    def reset(self, system_prompt: Message):
+        self.context = []
+        self.tokens = 0
+
+        start_prompt = Message(role="system", content=system_prompt)
+
+        self.context.append(start_prompt)
+        self.tokens += start_prompt.tokens
