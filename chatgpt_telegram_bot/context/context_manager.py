@@ -6,14 +6,15 @@ MAX_CONTEXT_TOKENS: int = 3400
 
 class ContextManager:
     max_context_tokens: int = MAX_CONTEXT_TOKENS
-    context: list[Message] = []
+    context: "list[Message]" = []
     tokens: int = 0
 
     def __init__(self, system_prompt: Message):
         self.context.append(system_prompt)
         self.tokens += system_prompt.tokens
 
-    def add_message(self, message: Message):
+    def add_message(self, role: str, text: str):
+        message = Message(role=role, content=text)
         context = [*self.context, message]
         tokens = self.tokens + message.tokens
         self.context = context
@@ -34,5 +35,5 @@ class ContextManager:
         self.tokens = tokens
         return self.context, self.tokens
 
-    def _proccess_context(self, context = list[Message]):
+    def _proccess_context(self, context: "list[Message]"):
         return list(map(lambda message: {"role": message.role, "content": message.content}, context))

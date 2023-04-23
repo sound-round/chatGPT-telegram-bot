@@ -13,8 +13,6 @@ from .context.context_manager import ContextManager
 from .models import Message
 
 
-
-
 SYSTEM_PROMPT = "You are a helpful assistant. Your name is Alfred." 
 
 
@@ -47,20 +45,17 @@ async def handle_message(update: Update, context):
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 async def handle_request_to_API(text):
-    message = Message(role="user", content=text)
-    messages = context_manager.add_message(message)
+    messages = context_manager.add_message(role="user", text=text)
 
-    print("\033[91m HERE \033[0m", messages)
+    print("\033[91m messages \033[0m", messages)
 
     response = await API_client.send_request(messages)
-    response_message = Message(role="assistant", content=response)
-    context_manager.add_message(response_message)
+    context_manager.add_message(role="assistant", text=response)
     return response
 
 
 
 if __name__ == '__main__':
-
     handler = MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
