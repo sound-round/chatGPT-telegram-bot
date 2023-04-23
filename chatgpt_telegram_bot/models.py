@@ -2,6 +2,7 @@ from pydantic import BaseModel, root_validator
 
 from .tokenizer import tokenize
 
+
 class Message(BaseModel):
     role: str
     content: str

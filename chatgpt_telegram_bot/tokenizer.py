@@ -8,5 +8,5 @@ def tokenize(text: str):
 
     tokens_by_chars = int(char_count / TOKEN_K)
     tokens_by_words = int(word_count / WORD_K)
-    
+
     return int((tokens_by_chars + tokens_by_words) / 2)

@@ -1,5 +1,3 @@
-import pytest
-
 from .context_manager import ContextManager, MAX_CONTEXT_TOKENS
 from ..models import Message
 
@@ -16,7 +14,7 @@ def test_context_manager():
 
     # notice that the prompt itself has been passed to ContextManager
     cm = ContextManager(prompt)
-    
+
     assert cm
     assert cm.max_context_tokens == MAX_CONTEXT_TOKENS
     assert cm.context == [message]
@@ -24,7 +22,7 @@ def test_context_manager():
 
     cm.max_context_tokens = 13
     message2 = "This is an user prompt."
-    
+
     messages = cm.add_message(role="user", text=message2)
     assert cm.tokens == 11
     assert cm.context == [message, Message(role="user", content=message2)]
@@ -46,7 +44,7 @@ def test_context_manager():
         {"role": "assistant", "content": "This is an assistant prompt."},
     ]
 
-    cm.reset(system_prompt="new system prompt")
+    cm.reset_dialog()
 
-    assert cm.tokens == 4
-    assert cm.context[0].content == "new system prompt"
+    assert cm.tokens == 6
+    assert cm.context[0].content == "You are a helpful assistant."
