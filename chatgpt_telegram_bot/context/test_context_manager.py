@@ -14,7 +14,8 @@ def test_context_manager():
     assert message.tokens
     assert message.tokens == 6
 
-    cm = ContextManager(message)
+    # notice that the prompt itself has been passed to ContextManager
+    cm = ContextManager(prompt)
     
     assert cm
     assert cm.max_context_tokens == MAX_CONTEXT_TOKENS
@@ -28,8 +29,8 @@ def test_context_manager():
     assert cm.tokens == 11
     assert cm.context == [message, Message(role="user", content=message2)]
     assert messages == [
-        {'role': 'system', 'content': 'This is a system prompt.'},
-        {'role': 'user', 'content': 'This is an user prompt.'},
+        {"role": "system", "content": "This is a system prompt."},
+        {"role": "user", "content": "This is an user prompt."},
     ]
 
     message3 = "This is an assistant prompt."
@@ -41,6 +42,11 @@ def test_context_manager():
         Message(role="assistant", content=message3),
     ]
     assert messages == [
-        {'role': 'system', 'content': 'This is a system prompt.'},
-        {'role': 'assistant', 'content': 'This is an assistant prompt.'},
+        {"role": "system", "content": "This is a system prompt."},
+        {"role": "assistant", "content": "This is an assistant prompt."},
     ]
+
+    cm.reset(system_prompt="new system prompt")
+
+    assert cm.tokens == 4
+    assert cm.context[0].content == "new system prompt"

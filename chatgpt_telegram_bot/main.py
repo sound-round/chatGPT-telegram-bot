@@ -2,7 +2,6 @@ import logging
 import telegram
 import httpx
 
-# from fastapi import FastAPI
 from telegram import Update
 from telegram.error import NetworkError
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
@@ -10,10 +9,9 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Messa
 from .enviroment import TELEGRAM_TOKEN
 from .openai_client import OpenAIClient
 from .context.context_manager import ContextManager
-from .models import Message
 
 
-SYSTEM_PROMPT = "You are a helpful assistant. Your name is Alfred." 
+SYSTEM_PROMPT = "You are a helpful assistant." 
 
 
 API_client = OpenAIClient()
@@ -56,7 +54,7 @@ async def handle_request_to_API(text):
 async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="The context of dialog has been reset."
+        text="The context of this dialog has been reset."
     )
     context_manager.reset(SYSTEM_PROMPT)
 
@@ -65,6 +63,7 @@ if __name__ == '__main__':
     try:
         reset_handler = CommandHandler("reset", reset)
         message_handler = MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
+
         bot = telegram.Bot(token=TELEGRAM_TOKEN)
         application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
         application.add_handlers([reset_handler, message_handler])
