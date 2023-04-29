@@ -13,7 +13,7 @@ from telegram.ext import (
     filters,
 )
 
-from .enviroment import TELEGRAM_TOKEN
+from .enviroment import TELEGRAM_TOKEN, CONNECT_TIMEOUT, READ_TIMEOUT, WRITE_TIMEOUT
 from .openai_client import OpenAIClient
 from .context.context_manager import ContextManager
 
@@ -124,7 +124,14 @@ if __name__ == "__main__":
         )
 
         bot = telegram.Bot(token=TELEGRAM_TOKEN)
-        application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+        application = (
+            ApplicationBuilder()
+            .token(TELEGRAM_TOKEN)
+            .connect_timeout(CONNECT_TIMEOUT)
+            .read_timeout(READ_TIMEOUT)
+            .write_timeout(WRITE_TIMEOUT)
+            .build()
+        )
         application.add_handlers(
             [
                 custom_prompt_handler,
@@ -145,6 +152,5 @@ if __name__ == "__main__":
 # 'api.telegram.org' does not appear to be an IPv4 or IPv6 address
 # (maybe set telegram.error.TimedOut)
 
-# context
-# commands
+# context to json
 # inline mode
