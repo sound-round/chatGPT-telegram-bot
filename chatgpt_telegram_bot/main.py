@@ -37,7 +37,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except httpx.ConnectTimeout:
         print("\033[91m ERROR: connection timed out \033[0m")
         response = "exception: connection timed out"
-    except (NetworkError, httpx.HTTPError) as exc:
+    except NetworkError as exc:
+        print("\033[91m Telegream network exception: \033[0m", exc.message)
+        response = f"Telegream network exception: {exc.message}"
+    except httpx.TimeoutException as exc:
+        print("\033[91m API_client Timeout exception: \033[0m", exc)
+        response = f"API_client Timeout exception:: {exc}"
+    except httpx.HTTPError as exc:
         print("\033[91m ERROR: \033[0m", exc)
         response = f"exception: {exc}"
     except Exception as exc:

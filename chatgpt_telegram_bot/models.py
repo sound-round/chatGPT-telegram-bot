@@ -6,7 +6,7 @@ from .tokenizer import tokenize
 class Message(BaseModel):
     role: str
     content: str
-    tokens: int | None
+    tokens: int = 0
 
     @root_validator()
     def count_tokens(cls, values):
