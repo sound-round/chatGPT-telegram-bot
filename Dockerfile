@@ -27,9 +27,14 @@ ENV CONNECT_TIMEOUT = 30 \
 # RUN pip install "poetry"
 
 # Install Poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python && \
-  chmod +x $HOME/.poetry/bin/poetry && \
-  $HOME/.poetry/bin/poetry config virtualenvs.create false
+RUN apt-get update && apt-get install -y curl \
+  && curl -sSL https://install.python-poetry.org | python3 - \
+  && apt-get remove -y --purge curl \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+# RUN curl -sSL https://install.python-poetry.org | python3 - && \
+#   chmod +x $HOME/.poetry/bin/poetry && \
+#   $HOME/.poetry/bin/poetry config virtualenvs.create false
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /app
