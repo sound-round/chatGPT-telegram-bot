@@ -1,4 +1,4 @@
-FROM 3.10.11-slim-buster
+FROM python:3.10.11-slim-buster
 
 # RUN apt update
 # RUN apt install python3 -y
