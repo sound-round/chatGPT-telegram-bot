@@ -1,7 +1,7 @@
-FROM ubuntu:latest
+FROM 3.10.11-slim-buster
 
-RUN apt update
-RUN apt install python3 -y
+# RUN apt update
+# RUN apt install python3 -y
 
 ARG ENVIROMENT, TELEGRAM_TOKEN, OPENAI_TOKEN
 # COPY ./ ./
@@ -23,16 +23,21 @@ ENV CONNECT_TIMEOUT = 30 \
   ENVIROMENT = $ENVIROMENT
 
 
-# System deps:
-RUN pip install "poetry"
+# # System deps:
+# RUN pip install "poetry"
+
+# Install Poetry
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python && \
+  chmod +x $HOME/.poetry/bin/poetry && \
+  $HOME/.poetry/bin/poetry config virtualenvs.create false
 
 # Copy only requirements to cache them in docker layer
-WORKDIR /chatgpt_telegram_bot
-COPY poetry.lock pyproject.toml /chatgpt_telegram_bot/
+WORKDIR /app
+COPY poetry.lock pyproject.toml /app/
 
 RUN poetry config virtualenvs.create false \
   && poetry install $(test "$ENVIROMENT" == production && echo "--no-dev") --no-interaction --no-ansi
 
-COPY . /chatgpt_telegram_bot
+COPY . /app
 RUN poetry shell
 CMD ["poetry", "run", "python", "-m", "chatgpt_telegram_bot.main"]
