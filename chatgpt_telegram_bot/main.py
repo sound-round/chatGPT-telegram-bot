@@ -56,7 +56,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_request_to_API(text):
     messages = context_manager.add_message(role="user", text=text)
 
-    print("\033[91m messages \033[0m", messages)
+    # print("\033[91m messages \033[0m", messages)
 
     response = await API_client.send_request(messages)
     context_manager.add_message(role="assistant", text=response)
