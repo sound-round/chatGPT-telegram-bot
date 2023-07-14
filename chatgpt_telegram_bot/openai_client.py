@@ -31,7 +31,8 @@ class OpenAIClient:
         self.timeout = timeout
         self.config = config
 
-    async def send_request(self, messages: dict[str, str]):
+    # async def send_request(self, messages: dict[str, str]) -> str:
+    async def send_request(self, messages: list[dict]) -> str:
         request_params = dict(messages=messages, **self.config)
 
         async with httpx.AsyncClient() as client:
