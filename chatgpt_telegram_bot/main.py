@@ -50,7 +50,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         print("\033[91m API_client Timeout exception: \033[0m", exc)
         response = f"API_client Timeout exception:: {exc}"
     except httpx.HTTPError as exc:
-        print("\033[91m ERROR: \033[0m", exc)
+        print("\033[91m HTTP_ERROR: \033[0m", exc)
         response = f"exception: {exc}"
     except Exception as exc:
         print("\033[91m COMMON EXCEPTION: \033[0m", exc)
@@ -168,10 +168,7 @@ if __name__ == "__main__":
 
 
 # TODO:
-
-# resolve problem on running:
-# 'api.telegram.org' does not appear to be an IPv4 or IPv6 address
-# (maybe set telegram.error.TimedOut)
+# 1. add env vars on server properly
 
 # context to json
 # inline mode
